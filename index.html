@@ -3,7 +3,7 @@
 <head>
 	<title>test</title>
 	<script src="jquery.js"></script>
-	<script src="loader_0.2.js"></script>
+	<script src="loader_0.4.js"></script>
 </head>
 <body>
 	<div id="ss"> </div>
@@ -15,28 +15,17 @@
 				console = {};
 				console.log = function() {};
 			}
-			/*
-			$("#start").click(function() {
-				$.ajax({
-					url: "mod.js",
-					dataType: "script",
-					success: function(data) {
-						debugger;
-						var obj = eval(data);
-						console.log("out:", obj.description());
-						$("#ss").html(obj.description());
-					}
-				});
-
-				return false;
-			})
-			*/
+			
 			window.moduleDir = "modules/";
 			$("#start").click(function() {
-				var mod = require("mod1", true, function(mod) {
+				var mod = require(["mod1","mod2"], true, function(mod) {
 					$("#ss").html(mod.description());
+				}).done(function(mod1, mod2) {
+					console.log("----");
+					console.log("done: ", mod1);
+					console.log("done: ", mod2);
 				});
-				require("mod2");
+				//require("mod2");
 				console.log("return mod=", mod); // 异步时，mod=null
 			})
 		})

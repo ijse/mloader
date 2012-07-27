@@ -44,11 +44,11 @@
 	//console.log(instance);
 	//console.log(instance.description());
 
-	var submod = require("mod1_1", true);
-	
-	console.log("mod1_1 sleep");
-	for(var i=0; i<99999999; i++) ;
-	console.log("mod1_1 awake");
+	var submod = require("mod1_1");
+
+	// console.log("mod1_1 sleep");
+	// for(var i=0; i<99999999; i++) ;
+	// console.log("mod1_1 awake");
 	// load submodule
 
 
