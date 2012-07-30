@@ -15,10 +15,10 @@
 				console = {};
 				console.log = function() {};
 			}
-			
+
 			window.moduleDir = "modules/";
 			$("#start").click(function() {
-				var mod = require(["mod1","mod2"], true, function(mod) {
+				var mod = require("mod1","mod2", true, function(mod) {
 					$("#ss").html(mod.description());
 				}).done(function(mod1, mod2) {
 					console.log("----");

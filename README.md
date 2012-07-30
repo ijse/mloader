@@ -4,6 +4,10 @@ loader 组件加载 v0.4
 
 ##特点 ##
 	1. 组件编写非常简单，不需要像seaJS那样包裹define函数，直接将组件对象返回即可（不返回也可以）
+	2. 支持同步和异步两种加载方式, 并且可以混合使用
+	3. 基于jQuery1.5+, 异步时返回Deferred对象，使用起来更加优雅
+	4. 随用随调，支持缓存，节省带宽资源
+	5. 百十行代码实现，小巧简洁，压缩后不到1KB
 
 ##使用方法 ##
 
@@ -18,7 +22,7 @@ loader 组件加载 v0.4
 		// load ok
 	})
 	// 也支持批量引入，此时返回一个Object，其键名为模块名
-	var mods = require(["mod1", "mod2"]); // mods={ "mod1": Object, "mod2": Object }
+	var mods = require("mod1", "mod2"); // mods={ "mod1": Object, "mod2": Object }
 
 ##组件编写规范 ##
 
