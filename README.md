@@ -1,4 +1,3 @@
-
 mloader 组件加载 v0.4
 ====================
 
@@ -13,23 +12,25 @@ mloader 组件加载 v0.4
 
 1. 引入jQuery 1.5+和mloader
 
-	<script src="jquery.js" type="text/javascript"></script>
-	<script src="mloader.js" type="text/javascript"></script>
+		<script src="jquery.js" type="text/javascript"></script>
+		<script src="mloader.js" type="text/javascript"></script>
 
-2. 配置及使用
+2. 配置及使用   
 
-	// 设置组件目录
-	window.moduleDir = "./modules/"; 
-	// 同步引入
-	var mod = require("mod"); // 组件名，不包括.js
-	// 异步引入
-	var mod = require("mod", true, callback, scope); // `callback`与`scope`可省略
-	// 异步时返回Deferred对象
-	require("mod", true).done(function(mod) {
-		// load ok
-	})
-	// 也支持批量引入，此时返回一个Object，其键名为模块名
-	var mods = require("mod1", "mod2"); // mods={ "mod1": Object, "mod2": Object }
+
+		// 设置组件目录
+		window.moduleDir = "./modules/"; 
+		// 同步引入
+		var mod = require("mod"); // 组件名，不包括.js
+		// 异步引入
+		var mod = require("mod", true, callback, scope); // `callback`与`scope`可省略
+		// 异步时返回Deferred对象
+		require("mod", true).done(function(mod) {
+			// load ok
+		})
+		// 也支持批量引入，此时返回一个Object，其键名为模块名
+		var mods = require("mod1", "mod2"); // mods={ "mod1": Object, "mod2": Object }
+
 
 ##组件编写规范 ##
 
