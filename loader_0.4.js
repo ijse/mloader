@@ -1,52 +1,30 @@
-
 /**
  * 动态组件加载v0.4
  * @author ijse(i@ijser.cn)
  * @depend jQuery 1.5+
  * @date   2012-07-27
- *
- * ##使用方法 ##
- *
- * 		// 设置组件目录
- *  	window.moduleDir = "./modules/"; 
- *  	// 同步引入
- *		var mod = require("mod"); // 组件名，不包括.js
- *		// 异步引入
- *		var mod = require("mod", true, callback, scope); // `callback`与`scope`可省略
- *		// 异步时返回Deferred对象
- *		require("mod", true).done(function(mod) {
- *			// load ok
- *		})
- *		// 也支持批量引入，此时返回一个Object，其键名为模块名
- *		var mods = require(["mod1", "mod2"]); // mods={ "mod1": Object, "mod2": Object }
  * 
- * ##组件编写规范 ##
- * 
- * 		(function() {
- *			// 组件代码
- *
- * 			return 组件实例
- * 		})
- * 		
  * ##更新内容 ##
  * 	1. 异步引入时返回Deferred对象
  * 	2. 支持批量加载
- * 	
- * ##其它说明 ##
- * 	1. 遇到循环依赖时会报错
- * 	2. 其中某组件运行错误时会报错
- * 	3. 组件加载是同步的，因此会阻塞页面其它内容的加载和JS代码的执行
- * 	4. 已经加载的组件会被缓存，第二次require时直接返回同一个组件实例
+ * 	3. 改进参数格式
  */
 window.require = (function($) {
-	
 	"use strict";
 
 	var thisLoader = this;
 	var modules = {};
 	var stack = [];
 
-	function getOValue(obj) {
+	function indexOfArray(arr, val) {
+		var value = arr;
+		for(var i =0; i < value.length; i++){  
+			if(value[i] == val) return i;  
+		}  
+		return -1;  
+	}
+
+	function getOValues(obj) {
 		var vals = [];
 		for(var i in obj) {
 			vals.push(obj[i]);
@@ -64,7 +42,7 @@ window.require = (function($) {
 		}
 	}
 
-	function evalScript(data) {
+	function evalScript(data, modulePath) {
 		var module = null; 
 		try {
 			module = eval(data);
@@ -86,14 +64,14 @@ window.require = (function($) {
 	 * @return {Object}            同步加载时返回组件对象，异步时返回Deferred对象
 	 */
 	function fetch(name, isAsync, callback, scope) {
-		var baseDir = window.moduleDir;
+		var baseDir = require.base;
 		var module = null;
 		// If cached, return 
 		if(module = modules[name]) {
 			return module;
 		}
 
-		console.log((isAsync ? "async" : "sync")  + " loading " + name);
+		console.log((isAsync ? "异步" : "同步")  + " 加载 " + name);
 
 		// Check if circled require
 		checkCircle(name);
@@ -108,7 +86,7 @@ window.require = (function($) {
 			dataType: "text",
 			async: isAsync || false
 		}).done(function(data) {
-			this.module = module = evalScript(data);
+			this.module = module = evalScript(data, name);
 			// Cache module
 			modules[name] = module;
 
@@ -130,8 +108,8 @@ window.require = (function($) {
 		var args = Array.prototype.slice.call(arguments, 0);
 
 		// Get minimum right(not -1) location of `isAsync` argument
-		var bloc = $.grep([args.indexOf(true), args.indexOf(false)], 
-							function(item) { return item>0; }).sort()[0] || args.length;
+		var bloc = Math.min.apply(null, $.grep([indexOfArray(args, true), indexOfArray(args, false)], 
+							function(item) { return item>0; })) || args.length;
 
 		var names = args.slice(0, bloc);
 		var ocfg = args.slice(bloc);
@@ -144,8 +122,6 @@ window.require = (function($) {
 
 		if(names.length === 1) {
 			return fetch.apply(thisLoader, arguments);
-
-		// FIXME!!!
 		} else if(names.length > 1) {
 			var mods = {};
 			$(names).each(function(index, item) {
@@ -153,7 +129,7 @@ window.require = (function($) {
 			});
 
 			if(isAsync) {
-				var dfds = getOValue(mods);
+				var dfds = getOValues(mods);
 				var dfd = $.when.apply(thisLoader, dfds).done(function() {
 					if($.isFunction(callback)) {
 						callback.apply(scope || window, arguments);
@@ -169,3 +145,13 @@ window.require = (function($) {
 	}
 
 })(jQuery)
+
+// if(!Array.prototype.indexOf){  
+// 	Array.prototype.indexOf = function(val){  
+// 		var value = this;  
+// 		for(var i =0; i < value.length; i++){  
+// 			if(value[i] == val) return i;  
+// 		}  
+// 		return -1;  
+// 	};  
+// }

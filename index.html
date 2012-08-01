@@ -16,17 +16,18 @@
 				console.log = function() {};
 			}
 
-			window.moduleDir = "modules/";
+			require.base = "modules/";
 			$("#start").click(function() {
 				var mod = require("mod1","mod2", true, function(mod) {
-					$("#ss").html(mod.description());
+					$("#ss").html(mod);
 				}).done(function(mod1, mod2) {
 					console.log("----");
 					console.log("done: ", mod1);
 					console.log("done: ", mod2);
+					console.log("结束");
+					console.log("----");
 				});
-				//require("mod2");
-				console.log("return mod=", mod); // 异步时，mod=null
+				console.log("异步引入mod1与mod2后，返回值是jQuery.Deferred对象", mod); 
 			})
 		})
 	</script>
